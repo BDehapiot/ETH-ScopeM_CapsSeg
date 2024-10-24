@@ -18,11 +18,12 @@ dependencies:
   - pip
   # conda_spec
   - napari
-  - pyqt
+  - pyqt=5.15.9
   - spyder
   # conda_tf_nogpu
   - pip:
     # pip_core
+    - bd-tools==0.2.1
     # pip_spec
     # pip_tf_nogpu
     - albumentations
