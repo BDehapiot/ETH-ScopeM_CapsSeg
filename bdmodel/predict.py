@@ -1,6 +1,5 @@
 #%% Imports -------------------------------------------------------------------
 
-import time
 import pickle
 from skimage import io
 from pathlib import Path
@@ -10,15 +9,9 @@ import segmentation_models as sm
 from bdmodel.functions import preprocess
 
 # bdtools
-from bdtools.patch import merge_patches
+from bdtools import merge_patches
 
 #%% Comments ------------------------------------------------------------------
-
-'''
-- Predict larger than VRAM 
-'''
-
-#%% Function: predict() -------------------------------------------------------
 
 def predict(
         imgs, 
@@ -27,7 +20,7 @@ def predict(
         patch_overlap=0,
         ):
 
-    valid_norms = ["none", "global", "image"]
+    valid_norms = ["global", "image"]
     if img_norm not in valid_norms:
         raise ValueError(
             f"Invalid value for img_norm: '{img_norm}'."
@@ -73,23 +66,20 @@ def predict(
 if __name__ == "__main__":
     
     # Paths
-    model_path = Path.cwd() / "model_normal"
-    # imgs_path = Path.cwd().parent / "data" / "Exp1_rf-0.1_rstack_1000-1199.tif"
-    imgs_path = Path.cwd().parent / "data" / "Exp2_rf-0.1_rstack_1000-1199.tif"
+    # model_path = Path.cwd() / "model_mass_768"
+    model_path = Path.cwd() / "model_surface_768"
+    imgs_path = Path.cwd().parent / "data" / "train_tissue" / "240611-18_4 merged_pix(13.771)_00.tif"
     
     # Open data
     imgs = io.imread(imgs_path)
     
     # Predict
-    t0 = time.time()
     prds = predict(        
         imgs,
         model_path,
         img_norm="global",
         patch_overlap=0,
         )
-    t1 = time.time()
-    print(f"predict() : {t1 - t0:.3f}")
     
     # Display
     import napari
@@ -99,5 +89,3 @@ if __name__ == "__main__":
     viewer.add_image(imgs)
     viewer.add_image(prds)
     viewer.add_image(prds_avg)
-    
-    
