@@ -264,7 +264,7 @@ class Train:
         self.history_df.to_csv(Path(self.save_path, "history.csv"))
                     
         # Validation predictions
-        nPrds = 20
+        nPrds = 40
         val_imgs = self.imgs[self.val_idx[:nPrds]]
         val_msks = self.msks[self.val_idx[:nPrds]]
         val_prds = np.stack(self.model.predict(val_imgs).squeeze())
@@ -428,25 +428,26 @@ if __name__ == "__main__":
     from skimage import io
 
     # Paths
-    train_path = Path(Path.cwd().parent, "data", "train_tissue")
+    train_path = Path(Path.cwd().parent, "data", "train")
     
     # Open data
     imgs, msks = [], []
-    msk_paths = get_paths(train_path, ext=".tif", tags_in="_mask-mass")
+    msk_paths = get_paths(
+        train_path, ext=".tif", tags_in=["_mask-shell"], subfolders=True)
     for path in msk_paths:
-        imgs.append(io.imread(str(path).replace("_mask-mass", "")))
+        imgs.append(io.imread(str(path).replace("_mask-shell", "")))
         msks.append(io.imread(path))
             
     # Train
     train = Train(
         imgs, msks,
-        save_name="surface_768",
+        save_name="shell_1024",
         save_path=Path.cwd(),
-        msk_type="normal",
-        img_norm="global",
-        patch_size=768,
-        patch_overlap=32,
-        nAugment=100,
+        msk_type="edt",
+        img_norm="image",
+        patch_size=1024,
+        patch_overlap=0,
+        nAugment=0,
         backbone="resnet18",
         epochs=200,
         batch_size=4,

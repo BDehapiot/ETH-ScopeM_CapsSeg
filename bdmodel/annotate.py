@@ -34,13 +34,13 @@ Todo
 #%% Inputs --------------------------------------------------------------------
 
 # Paths
-train_path = Path(Path.cwd().parent, "data", "train_tissue")
+train_path = Path(Path.cwd().parent, "data", "train")
 
 # Parameters
 edit = True
 randomize = True
 # np.random.seed(42)
-brush_size = 20
+brush_size = 200
 
 #%% Class : Annotate() --------------------------------------------------------
 

@@ -36,7 +36,7 @@ img_paths = (
     )
 
 # Selection
-nImg = 200   # number of images
+nImg = 250  # number of images
 nPatch = 1  # number of patch(es) extracted per image 
 size = 1024 # size of extract patches
 overlap = 0 # overlap between patches
@@ -65,9 +65,9 @@ for img_idx in img_idxs:
         pass
     if "ozp" in str(path.resolve()):
         if "mag10" in str(path.resolve()):
-            img = rescale(img, pixSize_key / pixSize_o10)
+            img = rescale(img, pixSize_o10 / pixSize_key)
         if "mag06" in str(path.resolve()):
-            img = rescale(img, pixSize_key / pixSize_o06)
+            img = rescale(img, pixSize_o06 / pixSize_key)
     
     # Extract patches
     patches = extract_patches(img, size, overlap)
@@ -79,12 +79,12 @@ for img_idx in img_idxs:
     for patch_idx in patch_idxs:
         patch = patches[patch_idx]
         if "keyence" in str(path.resolve()):
-            name = path.name.replace(".jpg", f"_pkey{patch_idx:02d}.tif")
+            name = f"pkey_{img_idx:04d}_{patch_idx:02d}.tif"
         elif "ozp" in str(path.resolve()):
             if "mag10" in str(path.resolve()):
-                name = path.name.replace(".png", f"_po10{patch_idx:02d}.tif")
+                name = f"po10_{img_idx:04d}_{patch_idx:02d}.tif"
             if "mag06" in str(path.resolve()):
-                name = path.name.replace(".png", f"_po06{patch_idx:02d}.tif")
+                name = f"po06_{img_idx:04d}_{patch_idx:02d}.tif"
         io.imsave(
             Path(train_path, name),
             patch.astype("float32"),
