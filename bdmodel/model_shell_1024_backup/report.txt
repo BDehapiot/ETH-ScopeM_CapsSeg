@@ -1,0 +1,17 @@
+date: 2024-11-08_10h20m15s
+save_name: model_shell_1024
+save_path: c:\users\bdeha\projects\eth-scopem_capsseg\bdmodel\model_shell_1024
+msk_type: edt
+img_norm: image
+patch_size: 1024
+patch_overlap: 0
+img/patches: 87
+augmentation: 250
+backbone: resnet18
+epochs: 200
+batch_size: 4
+validation_split: 0.2000
+learning_rate: 0.0010
+patience: 30
+best_epoch: 64
+best_val_loss: 0.2820

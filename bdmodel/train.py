@@ -447,15 +447,15 @@ if __name__ == "__main__":
         img_norm="image",
         patch_size=1024,
         patch_overlap=0,
-        nAugment=0,
+        nAugment=350,
         backbone="resnet18",
         epochs=200,
         batch_size=4,
         validation_split=0.2,
-        learning_rate=0.0005,
+        learning_rate=0.001,
         patience=30,
-        weights_path="",
-        # weights_path=Path(Path.cwd(), "model_normal_768", "weights.h5"),
+        # weights_path="",
+        weights_path=Path(Path.cwd(), "model_shell_1024", "weights.h5"),
         )
     
     imgs = train.imgs
