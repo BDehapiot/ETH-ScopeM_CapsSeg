@@ -1,0 +1,17 @@
+date: 2024-11-08_17h02m39s
+save_name: model_shell_512_bounds
+save_path: c:\users\bdeha\projects\eth-scopem_capsseg\bdmodel\model_shell_512_bounds
+msk_type: bounds
+img_norm: image
+patch_size: 512
+patch_overlap: 0
+img/patches: 732
+augmentation: 350
+backbone: resnet18
+epochs: 200
+batch_size: 4
+validation_split: 0.2000
+learning_rate: 0.0010
+patience: 30
+best_epoch: 19
+best_val_loss: 0.0527

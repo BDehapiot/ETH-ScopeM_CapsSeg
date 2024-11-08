@@ -441,11 +441,11 @@ if __name__ == "__main__":
     # Train
     train = Train(
         imgs, msks,
-        save_name="shell_1024",
+        save_name="shell_512_normal",
         save_path=Path.cwd(),
-        msk_type="edt",
+        msk_type="normal",
         img_norm="image",
-        patch_size=1024,
+        patch_size=512,
         patch_overlap=0,
         nAugment=350,
         backbone="resnet18",
@@ -454,8 +454,8 @@ if __name__ == "__main__":
         validation_split=0.2,
         learning_rate=0.001,
         patience=30,
-        # weights_path="",
-        weights_path=Path(Path.cwd(), "model_shell_1024", "weights.h5"),
+        weights_path="",
+        # weights_path=Path(Path.cwd(), "model_shell_1024", "weights.h5"),
         )
     
     imgs = train.imgs
