@@ -1,12 +1,16 @@
 #%% Imports -------------------------------------------------------------------
 
 import pickle
+import numpy as np
 from skimage import io
 from pathlib import Path
 import segmentation_models as sm
 
 # Functions
 from bdmodel.functions import preprocess
+
+# Functions
+from functions import preprocess_image
 
 # bdtools
 from bdtools import merge_patches
@@ -66,18 +70,19 @@ def predict(
 if __name__ == "__main__":
     
     # Paths
-    # model_path = Path.cwd() / "model_mass_768"
-    model_path = Path.cwd() / "model_surface_768"
-    imgs_path = Path.cwd().parent / "data" / "train_tissue" / "240611-18_4 merged_pix(13.771)_00.tif"
+    model_path = Path.cwd() / "model_shell_512_normal"
+    imgs_path = Path.cwd().parent / "data" / "EM12-5_beforeCPH_000000.jpg"
     
     # Open data
     imgs = io.imread(imgs_path)
-    
+    imgs = np.mean(imgs, axis=2) # RGB to float
+    imgs = preprocess_image(imgs)
+
     # Predict
     prds = predict(        
         imgs,
         model_path,
-        img_norm="global",
+        img_norm="image",
         patch_overlap=0,
         )
     
