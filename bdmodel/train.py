@@ -9,7 +9,7 @@ from datetime import datetime
 import segmentation_models as sm
 
 # Functions
-from bdmodel.functions import get_paths, preprocess, augment
+from bdmodel.functions import preprocess, augment
 
 # Tensorflow
 from tensorflow.keras.optimizers import Adam
@@ -24,6 +24,10 @@ from matplotlib.widgets import Button
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 #%% Comments ------------------------------------------------------------------
+
+'''
+'''
+
 #%% Function(s) ---------------------------------------------------------------
 
 def split_idx(n, validation_split=0.2):
@@ -179,8 +183,7 @@ class Train:
         
         self.model.compile(
             optimizer=Adam(learning_rate=self.learning_rate),
-            # loss="binary_crossentropy", 
-            loss='mean_squared_error',
+            loss="binary_crossentropy", 
             metrics=["mse"],
             )
         
@@ -265,7 +268,7 @@ class Train:
         self.history_df.to_csv(Path(self.save_path, "history.csv"))
                     
         # Validation predictions
-        nPrds = 60
+        nPrds = 50
         val_imgs = self.imgs[self.val_idx[:nPrds]]
         val_msks = self.msks[self.val_idx[:nPrds]]
         val_prds = np.stack(self.model.predict(val_imgs).squeeze())
@@ -421,43 +424,3 @@ class CustomCallback(Callback):
         if self.stop_training:
             self.model.stop_training = True
             print("Training stopped")
-
-#%% Execute -------------------------------------------------------------------
-
-if __name__ == "__main__":
-    
-    from skimage import io
-
-    # Paths
-    train_path = Path(Path.cwd().parent, "data", "train")
-    
-    # Open data
-    imgs, msks = [], []
-    msk_paths = get_paths(
-        train_path, ext=".tif", tags_in=["_mask-shell"], subfolders=True)
-    for path in msk_paths:
-        imgs.append(io.imread(str(path).replace("_mask-shell", "")))
-        msks.append(io.imread(path))
-            
-    # Train
-    train = Train(
-        imgs, msks,
-        save_name="shell_512_normal",
-        save_path=Path.cwd(),
-        msk_type="normal",
-        img_norm="image",
-        patch_size=512,
-        patch_overlap=0,
-        nAugment=0,
-        backbone="resnet18",
-        epochs=200,
-        batch_size=4,
-        validation_split=0.2,
-        learning_rate=0.0005,
-        patience=30,
-        weights_path="",
-        # weights_path=Path(Path.cwd(), "model_shell_1024", "weights.h5"),
-        )
-    
-    imgs = train.imgs
-    msks = train.msks

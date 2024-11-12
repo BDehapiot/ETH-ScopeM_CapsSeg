@@ -1,19 +1,13 @@
 #%% Imports -------------------------------------------------------------------
 
 import pickle
-import numpy as np
-from skimage import io
-from pathlib import Path
 import segmentation_models as sm
-
-# Functions
-from bdmodel.functions import preprocess
-
-# Functions
-from functions import preprocess_image
 
 # bdtools
 from bdtools import merge_patches
+
+# Functions
+from bdmodel.functions import preprocess
 
 #%% Comments ------------------------------------------------------------------
 
@@ -64,33 +58,3 @@ def predict(
     prds = merge_patches(prds, imgs.shape, patch_overlap)
     
     return prds
-
-#%% Execute -------------------------------------------------------------------
-
-if __name__ == "__main__":
-    
-    # Paths
-    model_path = Path.cwd() / "model_shell_512_normal"
-    imgs_path = Path.cwd().parent / "data" / "EM12-5_beforeCPH_000000.jpg"
-    
-    # Open data
-    imgs = io.imread(imgs_path)
-    imgs = np.mean(imgs, axis=2) # RGB to float
-    imgs = preprocess_image(imgs)
-
-    # Predict
-    prds = predict(        
-        imgs,
-        model_path,
-        img_norm="image",
-        patch_overlap=0,
-        )
-    
-    # Display
-    import napari
-    import numpy as np
-    prds_avg = np.mean(prds, axis=0)
-    viewer = napari.Viewer()
-    viewer.add_image(imgs)
-    viewer.add_image(prds)
-    viewer.add_image(prds_avg)
