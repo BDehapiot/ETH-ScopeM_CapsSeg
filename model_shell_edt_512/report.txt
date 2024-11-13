@@ -1,6 +1,6 @@
-date: 2024-11-12_09h49m36s
+date: 2024-11-12_10h48m41s
 save_name: model_shell_edt_512
-save_path: c:\users\bdeha\projects\eth-scopem_capsseg\model_shell_edt_512
+save_path: c:\users\bdehapiot\projects\eth-scopem_capsseg\model_shell_edt_512
 msk_type: edt
 img_norm: image
 patch_size: 512
@@ -13,5 +13,5 @@ batch_size: 4
 validation_split: 0.2000
 learning_rate: 0.0005
 patience: 30
-best_epoch: 10
-best_val_loss: 0.3128
+best_epoch: 75
+best_val_loss: 0.2793
