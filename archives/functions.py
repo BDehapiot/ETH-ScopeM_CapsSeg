@@ -5,48 +5,88 @@ import time
 import numpy as np
 import pandas as pd
 from skimage import io
-
-# bdtools
-from bdtools.norm import norm_gcn, norm_pct
-
-# bdmodel
-from bdmodel.predict import predict
+from pathlib import Path
+import segmentation_models as sm
+from bdtools.patch import extract_patches, merge_patches
 
 # Skimage
 from skimage.measure import label
 from skimage.filters import gaussian
 from skimage.transform import rescale
 from skimage.measure import regionprops
+from skimage.exposure import adjust_gamma
 from skimage.segmentation import watershed, clear_border
 from skimage.morphology import disk, binary_erosion, remove_small_objects
 
-#%% Variables -----------------------------------------------------------------
-
-# Pixel size
-pixSize_key = 3.731 # reference
-pixSize_o10 = 2.347
-pixSize_o06 = 3.676
+# Scipy
+from scipy.ndimage import distance_transform_edt
 
 #%% Functions (preprocess) ----------------------------------------------------
 
-def preprocess_image(path):
-    
-    # Open and preprocess
-    img = io.imread(path)
-    img = np.mean(img, axis=2) # RGB to float
-    img = gaussian(img, sigma=2, preserve_range=True)
-    img = norm_pct(norm_gcn(img)) 
-    
-    # Rescale images
-    if "keyence" in str(path.resolve()):
-        pass
-    if "ozp" in str(path.resolve()):
-        if "mag10" in str(path.resolve()):
-            img = rescale(img, pixSize_o10 / pixSize_key)
-        if "mag06" in str(path.resolve()):
-            img = rescale(img, pixSize_o06 / pixSize_key)
-    
+def normalize_gcn(img):
+    img = img - np.mean(img)
+    img = img / np.std(img)     
     return img
+
+def normalize_pct(img, min_pct, max_pct):
+    pMin = np.percentile(img, min_pct); # print(pMin)
+    pMax = np.percentile(img, max_pct); # print(pMax)
+    if pMax == 0:
+        pMax = np.max(img) # Debug
+    np.clip(img, pMin, pMax, out=img)
+    img -= pMin
+    img /= (pMax - pMin)   
+    return img
+
+def preprocess_image(img):
+    img = gaussian(img, sigma=2, preserve_range=True)
+    img = normalize_gcn(img)
+    img = normalize_pct(img, 0.01, 99.99)  
+    return img
+
+def preprocess_mask(msk, gamma=1.0):
+    labels = np.unique(msk)[1:]
+    edm = np.zeros((labels.shape[0], msk.shape[0], msk.shape[1]))
+    for l, lab in enumerate(labels):
+        tmp = msk == lab
+        tmp = distance_transform_edt(tmp)
+        if gamma != 1.0:
+            tmp = adjust_gamma(tmp, gamma=gamma, gain=1)
+        tmp = normalize_pct(tmp, 0.01, 99.99)
+        edm[l,...] = tmp
+    edm = np.max(edm, axis=0).astype("float32")  
+    return edm
+
+#%% Functions (predict) -------------------------------------------------------
+
+def predict(img, size, overlap, model_name):
+    
+    # Define model
+    model = sm.Unet(
+        'resnet18', # ResNet 18, 34, 50, 101 or 152
+        input_shape=(None, None, 1), 
+        classes=1, 
+        activation='sigmoid', 
+        encoder_weights=None,
+        )
+    
+    # Extract patches
+    patches = extract_patches(img, size, overlap)
+    patches = np.stack(patches)
+    
+    # Load weights & predict (cores)
+    model_path = Path(Path.cwd(), model_name.replace("weights_", "weights_cores_"))
+    model.load_weights(model_path)
+    cProbs = model.predict(patches).squeeze()
+    cProbs = merge_patches(cProbs, img.shape, overlap)
+    
+    # Load weights & predict (shell)
+    model_path = Path(Path.cwd(), model_name.replace("weights_", "weights_shell_"))
+    model.load_weights(model_path)
+    sProbs = model.predict(patches).squeeze()
+    sProbs = merge_patches(sProbs, img.shape, overlap)
+    
+    return sProbs, cProbs
 
 #%% Functions (objects) -------------------------------------------------------
 
@@ -68,6 +108,7 @@ def label_objects(probs, thresh1=0.5, thresh2=0.2, rf=1):
     labels = clear_border(labels)
     
     return labels
+
 
 def measure_objects(sLabels, cLabels, rf=1):
    
@@ -261,34 +302,24 @@ def display(img, sLabels, cLabels, sData, cData):
 
 #%% Functions (process) -------------------------------------------------------
 
-def process(
-        path, overlap,
-        model_cores_path,
-        model_shell_path,
-        rf=1, save=True
-        ):
+def process(path, size, overlap, model_name, rf=1, save=True):
     
     print(path.name)
-        
+    
     # Open & preprocess image
-    img = preprocess_image(path)
-        
-    # Predict
-    cProbs = predict(        
-        img, model_cores_path,
-        img_norm="image", patch_overlap=overlap, 
-        )
-    sProbs = predict(        
-        img, model_shell_path,
-        img_norm="image", patch_overlap=overlap,
-        )
+    img = io.imread(path).astype("float32")
+    img = np.mean(img, axis=2) # RGB to float
+    img = preprocess_image(img)   
+    
+    # Predict (shell & cores)
+    sProbs, cProbs = predict(img, size, overlap, model_name)
     
     # Label objects
     t0 = time.time()
     print(" - label_objects : ", end='')
     
-    sLabels = label_objects(sProbs, thresh1=0.50, thresh2=0.2, rf=rf) # Parameters (0.50 / 0.2)
-    cLabels = label_objects(cProbs, thresh1=0.85, thresh2=0.2, rf=rf) # Parameters (0.85 / 0.2)
+    sLabels = label_objects(sProbs, thresh1=0.50, thresh2=0.2, rf=rf) # Parameters
+    cLabels = label_objects(cProbs, thresh1=0.85, thresh2=0.2, rf=rf) # Parameters
     cLabels[sLabels == 0] = 0
     
     t1 = time.time()

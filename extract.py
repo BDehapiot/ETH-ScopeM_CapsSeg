@@ -10,9 +10,6 @@ from bdtools.patch import extract_patches
 # Functions
 from functions import preprocess_image
 
-# skimage
-from skimage.transform import rescale
-
 np.random.seed(42)
 
 #%% Comments ------------------------------------------------------------------
@@ -26,7 +23,7 @@ ozp     (mag06) : --> 3.676 µm per pixel
 
 #%% Inputs --------------------------------------------------------------------
 
-# Path
+# Paths
 data_path = Path("D:\local_CapsSeg\data")
 train_path = Path.cwd() / "data" / "train"
 img_paths = (
@@ -41,11 +38,6 @@ nPatch = 1  # number of patch(es) extracted per image
 size = 1024 # size of extract patches
 overlap = 0 # overlap between patches
 
-# Pixel size
-pixSize_key = 3.731 # reference
-pixSize_o10 = 2.347
-pixSize_o06 = 3.676
-
 #%% Extract -------------------------------------------------------------------
 
 img_idxs = np.random.choice(
@@ -54,20 +46,9 @@ img_idxs = np.random.choice(
 for img_idx in img_idxs:
     
     path = img_paths[img_idx]
-        
-    # Open & preprocess image
-    img = io.imread(path)
-    img = np.mean(img, axis=2) # RGB to float
-    img = preprocess_image(img)
     
-    # Rescale images
-    if "keyence" in str(path.resolve()):
-        pass
-    if "ozp" in str(path.resolve()):
-        if "mag10" in str(path.resolve()):
-            img = rescale(img, pixSize_o10 / pixSize_key)
-        if "mag06" in str(path.resolve()):
-            img = rescale(img, pixSize_o06 / pixSize_key)
+    # Open & preprocess image
+    img = preprocess_image(path)
     
     # Extract patches
     patches = extract_patches(img, size, overlap)
