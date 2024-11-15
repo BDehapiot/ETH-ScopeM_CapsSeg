@@ -16,7 +16,7 @@ train_path = Path(Path.cwd(), "data", "train")
 ext = ".tif"
 msk_name = "_mask-shell"
 tags_in = [msk_name]
-save_name = "shell_edt_512"
+save_name = "shell_edt_512_gamma"
     
 #%% Execute -------------------------------------------------------------------
     
@@ -28,31 +28,23 @@ if __name__ == "__main__":
     for path in msk_paths:
         imgs.append(io.imread(str(path).replace(msk_name, "")))
         msks.append(io.imread(path))
-        
-    from bdmodel import preprocess
-    imgs, msks = preprocess(imgs, msks=msks, img_norm="image", msk_type="edt", patch_size=512)
-    
-    import napari
-    viewer = napari.Viewer()
-    viewer.add_image(imgs)
-    viewer.add_image(msks)
-        
-    # # Train
-    # train = Train(
-    #     imgs, msks,
-    #     save_name=save_name,
-    #     save_path=Path.cwd(),
-    #     msk_type="edt",
-    #     img_norm="image",
-    #     patch_size=512,
-    #     patch_overlap=128,
-    #     nAugment=0,
-    #     backbone="resnet18",
-    #     epochs=200,
-    #     batch_size=4,
-    #     validation_split=0.2,
-    #     learning_rate=0.0005,
-    #     patience=30,
-    #     weights_path="",
-    #     # weights_path=Path(Path.cwd(), save_name, "weights.h5"),
-    #     )
+                
+    # Train
+    train = Train(
+        imgs, msks,
+        save_name=save_name,
+        save_path=Path.cwd(),
+        msk_type="edt",
+        img_norm="image",
+        patch_size=512,
+        patch_overlap=128,
+        nAugment=0,
+        backbone="resnet18",
+        epochs=200,
+        batch_size=4,
+        validation_split=0.2,
+        learning_rate=0.0005,
+        patience=30,
+        weights_path="",
+        # weights_path=Path(Path.cwd(), save_name, "weights.h5"),
+        )
