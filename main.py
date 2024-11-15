@@ -34,7 +34,7 @@ overlap = 128
 #%% Execute -------------------------------------------------------------------
 
 if __name__ == "__main__":
-    
+
     path = img_paths[img_idx]
     
     outputs = process(

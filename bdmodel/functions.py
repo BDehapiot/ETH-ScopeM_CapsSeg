@@ -13,6 +13,7 @@ from bdtools.norm import norm_gcn, norm_pct
 from bdtools.patch import extract_patches
 
 # Skimage
+from skimage.exposure import adjust_gamma
 from skimage.segmentation import find_boundaries 
 
 #%% Function: get_paths() -----------------------------------------------------
@@ -182,7 +183,7 @@ def preprocess(
                 msk = msk > 0
             elif msk_type == "edt":
                 msk = get_edt(msk, normalize="object", parallel=False)
-                # Add gamma adjustement (add parameter? just for this project?)
+                msk = adjust_gamma(msk, gamma=0.5, gain=1) # Parameter
             elif msk_type == "bounds":
                 msk = find_boundaries(msk)           
             
