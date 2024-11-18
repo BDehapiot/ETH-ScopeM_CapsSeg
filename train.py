@@ -28,7 +28,7 @@ if __name__ == "__main__":
     for path in msk_paths:
         imgs.append(io.imread(str(path).replace(msk_name, "")))
         msks.append(io.imread(path))
-                
+        
     # Train
     train = Train(
         imgs, msks,
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         batch_size=4,
         validation_split=0.2,
         learning_rate=0.0005,
-        patience=30,
+        patience=40,
         weights_path="",
         # weights_path=Path(Path.cwd(), save_name, "weights.h5"),
         )

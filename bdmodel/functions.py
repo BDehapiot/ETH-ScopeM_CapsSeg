@@ -201,7 +201,8 @@ def preprocess(
         if isinstance(imgs, np.ndarray) and imgs.ndim == 2: 
             imgs = normalize(imgs)
         else:
-            imgs = [normalize(img) for img in imgs]
+            # imgs = [normalize(img) for img in imgs]
+            imgs = [normalize(img) if not np.all(img == 0) else img for img in imgs]
     
     # Preprocess
     if msks is None:
