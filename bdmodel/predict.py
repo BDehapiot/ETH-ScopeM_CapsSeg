@@ -4,7 +4,8 @@ import pickle
 import segmentation_models as sm
 
 # bdtools
-from bdtools import merge_patches
+# from bdtools import merge_patches
+from bdmodel.patch import merge_patches
 
 # Functions
 from bdmodel.functions import preprocess

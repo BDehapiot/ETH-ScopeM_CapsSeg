@@ -4,3 +4,5 @@ from .functions import (
 from .annotate import Annotate
 from .train import Train
 from .predict import predict
+
+from .patch import merge_patches 
