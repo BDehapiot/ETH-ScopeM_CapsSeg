@@ -16,7 +16,7 @@ train_path = Path(Path.cwd(), "data", "train")
 ext = ".tif"
 msk_name = "_mask-cores"
 tags_in = [msk_name]
-save_name = "cores_edt_512_gamma"
+save_name = "cores_edt_512_gamma_test"
     
 #%% Execute -------------------------------------------------------------------
     
@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     # Open data
     imgs, msks = [], []
-    msk_paths = get_paths(train_path, ext=ext, tags_in=tags_in)
+    msk_paths = get_paths(train_path, ext=ext, tags_in=tags_in, subfolders=True)
     for path in msk_paths:
         imgs.append(io.imread(str(path).replace(msk_name, "")))
         msks.append(io.imread(path))

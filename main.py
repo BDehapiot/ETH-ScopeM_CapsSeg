@@ -26,8 +26,8 @@ model_cores_path = Path(Path.cwd(), "model_cores_edt_512_gamma")
 model_shell_path = Path(Path.cwd(), "model_shell_edt_512_gamma")
 
 # Parameters
-img_idx = 555
-rf = 0.5
+img_idx = 369
+rf = 1
 overlap = 256
 
 #%% Execute -------------------------------------------------------------------
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         path, overlap,
         model_cores_path,
         model_shell_path,
-        rf=1, save=True
+        rf=rf, save=False
         )
     
     # Display
