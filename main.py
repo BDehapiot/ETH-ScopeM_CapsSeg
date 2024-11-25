@@ -26,7 +26,7 @@ model_cores_path = Path(Path.cwd(), "model_cores_edt_512_gamma")
 model_shell_path = Path(Path.cwd(), "model_shell_edt_512_gamma")
 
 # Parameters
-img_idx = 369
+img_idx = 622
 rf = 1
 overlap = 256
 

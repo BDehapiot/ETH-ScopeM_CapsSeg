@@ -33,7 +33,7 @@ img_paths = (
     )
 
 # Selection
-nImg = 500  # number of images
+nImg = 250  # number of images
 nPatch = 10 # number of patch(es) extracted per image 
 size = 1024 # size of extract patches
 overlap = 0 # overlap between patches
@@ -47,7 +47,7 @@ for img_idx in img_idxs:
     
     path = img_paths[img_idx]
     
-    if "EM7" in str(path):
+    if "mag06" in str(path):
     
         # Open & preprocess image
         img = preprocess_image(path)
