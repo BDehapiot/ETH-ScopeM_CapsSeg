@@ -1,11 +1,11 @@
-date: 2024-11-21_11h01m49s
+date: 2024-11-26_09h01m19s
 save_name: model_cores_edt_512_gamma
 save_path: c:\users\bdehapiot\projects\eth-scopem_capsseg\model_cores_edt_512_gamma
 msk_type: edt
 img_norm: image
 patch_size: 512
 patch_overlap: 128
-img/patches: 1485
+img/patches: 2043
 augmentation: 0
 backbone: resnet18
 epochs: 200
@@ -13,5 +13,5 @@ batch_size: 4
 validation_split: 0.2000
 learning_rate: 0.0005
 patience: 40
-best_epoch: 63
-best_val_loss: 0.1870
+best_epoch: 70
+best_val_loss: 0.1806

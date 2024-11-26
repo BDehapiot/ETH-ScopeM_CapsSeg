@@ -14,9 +14,9 @@ train_path = Path(Path.cwd(), "data", "train")
 
 # Parameters
 ext = ".tif"
-msk_name = "_mask-shell"
+msk_name = "_mask-cores"
 tags_in = [msk_name]
-save_name = "shell_edt_512_gamma_test"
+save_name = "cores_edt_512_gamma"
     
 #%% Execute -------------------------------------------------------------------
     
