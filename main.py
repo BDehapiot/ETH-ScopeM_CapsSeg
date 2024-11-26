@@ -10,7 +10,6 @@ from functions import process
 
 '''
 - Some bugs regarding rescaling with rf = 0.5 (ozp data)
-- Find a way to discard border objects in ozp data (diaphragm)
 '''
 
 #%% Inputs --------------------------------------------------------------------
@@ -26,7 +25,7 @@ model_cores_path = Path(Path.cwd(), "model_cores_edt_512_gamma")
 model_shell_path = Path(Path.cwd(), "model_shell_edt_512_gamma")
 
 # Parameters
-img_idx = 622
+img_idx = 275
 rf = 1
 overlap = 256
 
@@ -63,24 +62,3 @@ if __name__ == "__main__":
         outputs["cDisplay"], name="cDisplay", contrast_limits=(0, 255),
         blending="additive", colormap="cyan"
         )
-    
-#%%
-    
-    # from skimage.filters import gaussian
-    # from skimage.morphology import disk, binary_dilation
-    # from skimage.segmentation import clear_border
-    
-    # img = outputs["img"]
-    # cLabels = outputs["cLabels"]
-    # sLabels = outputs["sLabels"]
-    # msk = img != img[0, 0]
-    # msk = gaussian(msk, sigma=50) > 0.99
-    # # msk = binary_dilation(msk, footprint=disk(10))
-    
-    # # Display
-    # viewer = napari.Viewer()
-    # viewer.add_image(img)  
-    # viewer.add_image(msk, blending="additive") 
-    # viewer.add_labels(cLabels, blending="additive") 
-    # viewer.add_labels(sLabels, blending="additive") 
-    # # viewer.add_image(img_grd_msk) 
