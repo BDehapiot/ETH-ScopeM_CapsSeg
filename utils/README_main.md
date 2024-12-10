@@ -1,25 +1,47 @@
 ## Content
 
 ### main.py  
-Processes all JPG files contained in the user-provided `data_path` folder and subfolders. Each iteration produces two CSV files (`cData.csv` and `sData.csv`) and a display image (`display.png`) saved at the location of the processed image. See [Outputs](#Outputs) section for more details.
+Processes either a selected image or all `jpg`, `png`, or `tif` images within 
+the `data_path` folder and its subfolders. The rescaling factor `rf` can be 
+adjusted to accelerate the post-prediction process. For each iteration, the 
+procedure generates two CSV files (`cData.csv` and `sData.csv`) along with a 
+display image (`display.png`), which are saved in the same location as the 
+processed image. Refer to the [Outputs](#Outputs) section for further details.
 
-### display.py  
-Display segmentation results (outlines, labels, probabilities...) in Napari for the user-provided `data_path` and `image_name`.
+```bash
+# Paths
+- data_path        # str, path to folder containing image(s) to process
+- img_name         # str, image name or "all" for batch processing
+```
+```bash
+# Parameters
+- rf               # float, post-prediction rescaling factor (0 to 1)
+- overlap          # int, prediction patches overlap (default 256)
+- save             # bool, save or not outputs files 
+```
+```bash
+# Outputs
+- ..._cData.csv    # core data saved as csv
+- ..._sData.csv    # shell data saved as csv
+- ..._display.png  # display image 
+```
 
 ### analyse.py
-Compile data from different CSV files, including `tags_in` and excluding `tags_out` containing file name.
+Compile data from different CSV files, including `tags_in` and excluding 
+`tags_out` containing file name.
 
 ### Others
 - **functions.py** - contains all required functions
 - **environment-gpu.yml** - dependencies with GPU support (NVIDIA GPU required)
 - **environment-nogpu.yml** - dependencies with no GPU support
-- **model_weights_cores.h5** - model weights for core segmentation
-- **model_weights_shells.h5** - model weights for shell segmentation
+- **model_cores_edt_512_gamma** - model files for core segmentation
+- **model_shell_edt_512_gamma** - model files for shell segmentation
 
 ## Outputs
 
 ### display.png  
-Image showing results of segmentation with detected **shells** in yellow and **cores** in cyan.
+Image showing results of segmentation with detected **shells** in yellow and 
+**cores** in cyan.
 
 <img src='example_display.png' alt="example_display">
 

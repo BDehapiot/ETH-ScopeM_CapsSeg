@@ -50,29 +50,10 @@ def preprocess_image(path):
 
 #%% Functions (objects) -------------------------------------------------------
 
-# def label_objects(probs, thresh1=0.5, thresh2=0.2, rf=1):
-    
-#     if rf != 1: 
-#         probs = rescale(probs, 0.5)
-    
-#     probs = gaussian(probs, sigma=2, preserve_range=True)
-#     markers = label(probs > thresh1)
-#     markers = remove_small_objects(markers, min_size=256 * rf) # Parameter
-#     labels = watershed(
-#         -probs,
-#         markers=markers,
-#         mask=probs > thresh2,
-#         compactness=1,
-#         watershed_line=True,
-#         )
-#     labels = clear_border(labels)
-    
-#     return labels
-
 def label_objects(path, img, probs, thresh1=0.5, thresh2=0.2, rf=1):
     
     if rf != 1: 
-        probs = rescale(probs, 0.5)
+        probs = rescale(probs, rf)
     
     probs = gaussian(probs, sigma=2, preserve_range=True)
     markers = label(probs > thresh1)
@@ -90,6 +71,7 @@ def label_objects(path, img, probs, thresh1=0.5, thresh2=0.2, rf=1):
     if "keyence" in str(path.resolve()):
         pass
     if "ozp" in str(path.resolve()):
+        img = rescale(img, rf)
         border_msk = img != img[0, 0]
         border_msk = gaussian(border_msk, sigma=50) > 0.99
         labels = clear_border(labels, mask=border_msk)
