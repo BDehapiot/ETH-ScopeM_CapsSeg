@@ -1,4 +1,4 @@
-name: CapsSeg
+name: CapsSeg_nogpu
 
 channels:
   - conda-forge

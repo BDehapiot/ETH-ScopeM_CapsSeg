@@ -8,10 +8,6 @@ from functions import process
 
 #%% Comments ------------------------------------------------------------------
 
-'''
-- do not process display.png files !
-'''
-
 #%% Inputs --------------------------------------------------------------------
 
 # Paths
@@ -21,7 +17,7 @@ img_name = "all" # image name or "all" for batch processing
 # Parameters
 rf = 1
 overlap = 256
-save = True
+save = False
 
 #%% Execute -------------------------------------------------------------------
 
